@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:packages_reusable/ChatScreen.dart';
 String newName = "";
 String newMessage = "";
-
+String initialMessage="There's no chats now\nPress the button below to add a chat";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,19 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.cyan, // Adjust color for both themes
         ),
 
-      body:
-      ListView.separated(
-        itemCount: chats.length,
-        itemBuilder: (context, index) {
-          return Chats(
-            context: context, // Pass the context here
-            name: chats[index].name,
-            message: chats[index].message,
-            time: chats[index].time,
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => Divider(height: 5),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -100,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         setState(() {
+                          initialMessage=' ';
                           chats.add(
                             ChatData(
                               name: newName,
@@ -120,6 +108,22 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Icon(Icons.add),
       ),
+
+      body:
+      Stack(
+        children:<Widget>[ ListView.separated(
+          itemCount: chats.length,
+          itemBuilder: (context, index) {
+            return Chats(
+              context: context,
+              name: chats[index].name,
+              message: chats[index].message,
+              time: chats[index].time,
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) => Divider(height: 5),
+        ),        Center(child: Text(initialMessage,style: TextStyle(fontSize: 30,color:Colors.grey,))),
+      ]),
     )
     );
   }
@@ -146,6 +150,7 @@ Widget Chats({
       Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
     },
     child: ListTile(
+      tileColor: Colors.grey,
       leading: Text(
         name[0],
         style: TextStyle(fontSize: 30),
